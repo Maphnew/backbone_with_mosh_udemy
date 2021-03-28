@@ -64,3 +64,5 @@ benz.set("registrationNumber", "XLI887");
 var isValidNow = benz.isValid();
 var isErrorNow = benz.validationError;
 console.log(isValidNow, isErrorNow);
+
+benz.start();
