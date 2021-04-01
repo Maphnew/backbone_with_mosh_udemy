@@ -66,3 +66,5 @@ var isErrorNow = benz.validationError;
 console.log(isValidNow, isErrorNow);
 
 benz.start();
+
+console.clear();
