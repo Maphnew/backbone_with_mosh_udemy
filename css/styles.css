@@ -1,6 +1,39 @@
-
 body {
-	padding: 40px;
+  padding: 40px;
 }
 
-body, p { font-size: 24px; }
+body,
+p {
+  font-size: 24px;
+}
+
+#venues-container {
+  float: left;
+  width: 500px;
+}
+
+#venues {
+  list-style: none;
+  border-top: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+  padding-left: 0;
+  margin-top: 0;
+}
+
+#venues li {
+  padding: 30px;
+  border-bottom: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  cursor: pointer;
+}
+
+#venues li:hover {
+  background: #f7f5f5;
+}
+
+#map-container {
+  float: left;
+  width: 800px;
+  height: 800px;
+  background: #ede8e8;
+}

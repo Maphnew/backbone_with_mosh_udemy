@@ -430,3 +430,141 @@ person.walk();
 person.off("walking");
 person.walk();
 ```
+
+### 35. Creating an Event Aggregator to Coordinate Multiple Views
+
+- styles.css
+
+```css
+#venues-container {
+  float: left;
+  width: 500px;
+}
+
+#venues {
+  list-style: none;
+  border-top: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+  padding-left: 0;
+  margin-top: 0;
+}
+
+#venues li {
+  padding: 30px;
+  border-bottom: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  cursor: pointer;
+}
+
+#venues li:hover {
+  background: #f7f5f5;
+}
+
+#map-container {
+  float: left;
+  width: 800px;
+  height: 800px;
+  background: #ede8e8;
+}
+```
+
+- index.html
+
+```html
+<div id="container">
+  <div id="venues-container"></div>
+  <div id="map-container">
+    <span id="venue-name"></span>
+  </div>
+</div>
+```
+
+- main.js
+
+```JS
+
+var Venue = Backbone.Model.extend();
+
+var Venues = Backbone.Collection.extend({
+	model: Venue
+});
+
+var VenueView = Backbone.View.extend({
+	tagName: "li",
+
+    initialize: function(options){
+        this.bus = options.bus;
+    },
+
+	events: {
+		"click": "onClick",
+	},
+
+	onClick: function(){
+        this.bus.trigger("venueSelected", this.model);
+	},
+
+	render: function(){
+		this.$el.html(this.model.get("name"));
+
+		return this;
+	}
+});
+
+var VenuesView = Backbone.View.extend({
+	tagName: "ul",
+
+	id: "venues",
+
+    initialize: function(options){
+        this.bus = options.bus;
+    },
+
+	render: function(){
+		var self = this;
+
+		this.model.each(function(venue){
+			var view = new VenueView({ model: venue, bus: bus });
+			self.$el.append(view.render().$el);
+		});
+
+		return this;
+	}
+});
+
+var MapView = Backbone.View.extend({
+	el: "#map-container",
+
+    initialize: function(options){
+        this.bus = options.bus;
+
+        this.bus.on("venueSelected", this.onVenueSelected, this);
+    },
+
+    onVenueSelected: function(venue) {
+        this.model = venue;
+        this.render();
+    },
+
+	render: function(){
+		if (this.model)
+			this.$("#venue-name").html(this.model.get("name"));
+
+		return this;
+	}
+})
+
+var bus = _.extend({}, Backbone.Events);
+
+var venues = new Venues([
+	new Venue({ name: "30 Mill Espresso" }),
+	new Venue({ name: "Platform Espresso" }),
+	new Venue({ name: "Mr Foxx" })
+	]);
+
+var venuesView = new VenuesView({ model: venues, bus: bus});
+$("#venues-container").html(venuesView.render().$el);
+
+var mapView = new MapView({ bus: bus });
+mapView.render();
+```
