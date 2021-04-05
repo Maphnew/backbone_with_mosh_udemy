@@ -404,3 +404,29 @@ var song = new Song({ title: "Blue in Green", plays: 1110 });
 var songView = new SongView({ el: "#container", model: song });
 songView.render();
 ```
+
+### 34. Binding and Trigger Custom Events
+
+```JS
+var person = {
+    name: "Mosh",
+
+    walk: function(){
+        this.trigger("walking", {
+            speed:1,
+            startTime: "08:00"
+        });
+    }
+};
+
+_.extend(person, Backbone.Events);
+
+// person.once(...)
+person.on("walking", function(e){
+    console.log("Person is walking.", e);
+});
+
+person.walk();
+person.off("walking");
+person.walk();
+```
